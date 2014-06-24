@@ -27,5 +27,8 @@
   "bugs": {
     "url": "https://github.com/podefr/d3-fun/issues"
   },
+  "scripts": {
+      "build": "browserify -e index.js -o public/js/index.js"
+  },
   "homepage": "https://github.com/podefr/d3-fun"
 }
