@@ -2,24 +2,41 @@
 "use strict";
 
 var LineChart = require("./js/line-chart");
-var lineChart = new LineChart();
+var lineChart = new LineChart(document.querySelector("figure"));
 
-lineChart.ySeries((new Array(10)).map(function (val, idx) { return idx * 10; }), "%")
-    .xSeries((new Array(5)).map(function (val, idx) { return idx * 10; }), "Degrees")
+lineChart
+    .d3(function (d3) {
+        d3.attr("width", 500)
+        .attr("height", 1000);
+    })
+    .ySeries(10, 10, "%")
+    .xSeries(5, 10, "°(C)")
     .addLine([])
-    .addLine([]);
+    .addLine([])
+    .render();
 
 },{"./js/line-chart":2}],2:[function(require,module,exports){
 "use strict";
 
 var d3 = require("d3");
 
-module.exports = function LineChart() {
-    this.ySeries = function (data, legend) {
+module.exports = function LineChart(place) {
+    if (!place) {
+        throw new Error("when newing up a LineChart, please give a place where to start charting");
+    }
+
+    var _d3 = d3.select(place).append("svg"),
+        _yAxis,
+        _xAxis;
+
+    this.ySeries = function (ticks, tickSize) {
+        _yAxis = d3.svg.axis().ticks(ticks).tickSize(tickSize).orient("left");
+        _d3.append("svg:g").call(_yAxis);
         return this;
     };
 
-    this.xSeries = function (data, legend) {
+    this.xSeries = function () {
+
         return this;
     };
 
@@ -33,6 +50,11 @@ module.exports = function LineChart() {
 
     this.render = function () {
 
+    };
+
+    this.d3 = function (callback) {
+        callback(_d3);
+        return this;
     };
 };
 
