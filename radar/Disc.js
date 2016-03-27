@@ -2,7 +2,10 @@
 
 var d3 = require('d3');
 
-
+// Note that this is a learning exercise. Another, and simpler solution,
+// would be to always render the hands at 0' and the rotate the entire disc instead of
+// re-rendering the hands at a new position every time. We would get rid of a lot of logic
+// and also the scales and all that...
 module.exports = function Disc() {
     var _scale = d3.scale
         .linear()

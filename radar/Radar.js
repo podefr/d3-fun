@@ -33,6 +33,7 @@ module.exports = function Radar() {
     this.render = function render(svgElement) {
         addDial(svgElement);
         createDiscs(svgElement);
+        createDefs(svgElement);
     };
 
     this.startClock = function startClock() {
@@ -70,7 +71,5 @@ module.exports = function Radar() {
         dial.setRadius(_discsInitParams.hours.outerRadius);
         dial.render(dialGroup);
     }
-
-
 };
 

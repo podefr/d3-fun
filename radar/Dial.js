@@ -8,9 +8,9 @@ module.exports = function Dial() {
     };
 
     this.render = function render(svgElement) {
-        svgElement.append("svg:g")
-            .append("svg:circle")
-            .attr("class", "dial")
-            .attr("r", _radius);
+        svgElement.append("svg:circle")
+            .attr("r", _radius)
+
+            .attr("fill", "url(#zoneGradient)");;
     };
 };

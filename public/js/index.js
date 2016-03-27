@@ -12971,10 +12971,10 @@ module.exports = function Dial() {
     };
 
     this.render = function render(svgElement) {
-        svgElement.append("svg:g")
-            .append("svg:circle")
-            .attr("class", "dial")
-            .attr("r", _radius);
+        svgElement.append("svg:circle")
+            .attr("r", _radius)
+
+            .attr("fill", "url(#zoneGradient)");;
     };
 };
 },{}],5:[function(require,module,exports){
@@ -12982,7 +12982,10 @@ module.exports = function Dial() {
 
 var d3 = require('d3');
 
-
+// Note that this is a learning exercise. Another, and simpler solution,
+// would be to always render the hands at 0' and the rotate the entire disc instead of
+// re-rendering the hands at a new position every time. We would get rid of a lot of logic
+// and also the scales and all that...
 module.exports = function Disc() {
     var _scale = d3.scale
         .linear()
@@ -13069,6 +13072,7 @@ module.exports = function Radar() {
     this.render = function render(svgElement) {
         addDial(svgElement);
         createDiscs(svgElement);
+        createDefs(svgElement);
     };
 
     this.startClock = function startClock() {
@@ -13106,8 +13110,6 @@ module.exports = function Radar() {
         dial.setRadius(_discsInitParams.hours.outerRadius);
         dial.render(dialGroup);
     }
-
-
 };
 
 
@@ -13128,7 +13130,7 @@ module.exports = function init(chartDom) {
 var Bacon = require('baconjs');
 
 module.exports = function quartz() {
-    var _ticksPerSecond = 5;
+    var _ticksPerSecond = 10;
 
     return Bacon.fromPoll(1000 / _ticksPerSecond, function () {
         return new Date();
