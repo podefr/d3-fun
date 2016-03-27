@@ -9,10 +9,17 @@
 
 .discs circle {
     fill: none;
-    stroke: red;
+    stroke: black;
 }
 
 .discs path {
-    stroke: red;
+    stroke: #c0160c;
     stroke-width: 1px;
+    stop-color: green;
+}
+
+.dial {
+    fill: #500806;
+    stroke: #3d3d3f;
+    stroke-width: 16px;
 }

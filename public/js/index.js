@@ -12964,9 +12964,18 @@ if (typeof define !== "undefined" && define !== null && define.amd != null) {
 "use strict";
 
 module.exports = function Dial() {
-  this.render = function render() {
+    var _radius = 0;
 
-  };
+    this.setRadius = function setRadius(radius) {
+        _radius = radius;
+    };
+
+    this.render = function render(svgElement) {
+        svgElement.append("svg:g")
+            .append("svg:circle")
+            .attr("class", "dial")
+            .attr("r", _radius);
+    };
 };
 },{}],5:[function(require,module,exports){
 "use strict";
@@ -12980,26 +12989,27 @@ module.exports = function Disc() {
         .domain([0, 359])
         .range([0, 2 * Math.PI]);
 
-    var _innerDiameter, _outerDiameter, _discGroup, _hand;
+    var _innerRadius, _outerRadius, _discGroup, _hand;
 
-    this.setInnerDiameter = function setInnerDiameter(innerDiameter) {
-        _innerDiameter = innerDiameter;
+    this.setInnerRadius = function setInnerRadius(innerRadius) {
+        _innerRadius = innerRadius;
     };
 
-    this.setOuterDiameter = function setOuterDiameter(outerDiameter) {
-        _outerDiameter = outerDiameter;
+    this.setOuterRadius = function setOuterRadius(outerRadius) {
+        _outerRadius = outerRadius;
     };
 
     this.render = function render(group) {
         _discGroup = group.append("svg:g");
 
         _discGroup.append("svg:circle")
-            .attr("r", _outerDiameter)
-            .attr("class", "outer diameter disc");
+            .attr("r", _outerRadius)
+            .attr("class", "outer diameter disc")
+            .append("svg:stop-color");
 
         _hand = d3.svg.arc()
-            .innerRadius(_innerDiameter)
-            .outerRadius(_outerDiameter)
+            .innerRadius(_innerRadius)
+            .outerRadius(_outerRadius)
             .startAngle(function (angle) {
                 return _scale(angle);
             })
@@ -13037,20 +13047,20 @@ module.exports = function Radar() {
 
     var _discsInitParams = {
         "hours": {
-            innerDiameter: 100,
-            outerDiameter: 150,
+            innerRadius: 100,
+            outerRadius: 150,
             initialAngle: 0
         },
 
         "minutes": {
-            innerDiameter: 50,
-            outerDiameter: 100,
+            innerRadius: 50,
+            outerRadius: 100,
             initialAngle: 0
         },
 
         "seconds": {
-            innerDiameter: 0,
-            outerDiameter: 50,
+            innerRadius: 25,
+            outerRadius: 50,
             initialAngle: 0
         }
     };
@@ -13058,8 +13068,8 @@ module.exports = function Radar() {
     var _discs = {};
 
     this.render = function render(svgElement) {
-        createDiscs(svgElement);
         addDial(svgElement);
+        createDiscs(svgElement);
     };
 
     this.startClock = function startClock() {
@@ -13080,8 +13090,8 @@ module.exports = function Radar() {
             var disc = new Disc();
             var initParams = _discsInitParams[discName];
 
-            disc.setInnerDiameter(initParams.innerDiameter);
-            disc.setOuterDiameter(initParams.outerDiameter);
+            disc.setInnerRadius(initParams.innerRadius);
+            disc.setOuterRadius(initParams.outerRadius);
 
             disc.render(discsGroup);
 
@@ -13094,6 +13104,7 @@ module.exports = function Radar() {
 
         var dial = new Dial();
 
+        dial.setRadius(_discsInitParams.hours.outerRadius);
         dial.render(dialGroup);
     }
 
@@ -13144,7 +13155,7 @@ module.exports = {
         }
 
         function hoursToAngle() {
-            // 360deg = 3600s
+            // 360deg = 720 minutes
             var hours = date.getHours() * 60 + date.getMinutes();
 
             return 360 * hours / 720;

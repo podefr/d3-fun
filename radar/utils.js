@@ -17,7 +17,7 @@ module.exports = {
         }
 
         function hoursToAngle() {
-            // 360deg = 3600s
+            // 360deg = 720 minutes
             var hours = date.getHours() * 60 + date.getMinutes();
 
             return 360 * hours / 720;

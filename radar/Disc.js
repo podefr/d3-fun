@@ -9,26 +9,27 @@ module.exports = function Disc() {
         .domain([0, 359])
         .range([0, 2 * Math.PI]);
 
-    var _innerDiameter, _outerDiameter, _discGroup, _hand;
+    var _innerRadius, _outerRadius, _discGroup, _hand;
 
-    this.setInnerDiameter = function setInnerDiameter(innerDiameter) {
-        _innerDiameter = innerDiameter;
+    this.setInnerRadius = function setInnerRadius(innerRadius) {
+        _innerRadius = innerRadius;
     };
 
-    this.setOuterDiameter = function setOuterDiameter(outerDiameter) {
-        _outerDiameter = outerDiameter;
+    this.setOuterRadius = function setOuterRadius(outerRadius) {
+        _outerRadius = outerRadius;
     };
 
     this.render = function render(group) {
         _discGroup = group.append("svg:g");
 
         _discGroup.append("svg:circle")
-            .attr("r", _outerDiameter)
-            .attr("class", "outer diameter disc");
+            .attr("r", _outerRadius)
+            .attr("class", "outer diameter disc")
+            .append("svg:stop-color");
 
         _hand = d3.svg.arc()
-            .innerRadius(_innerDiameter)
-            .outerRadius(_outerDiameter)
+            .innerRadius(_innerRadius)
+            .outerRadius(_outerRadius)
             .startAngle(function (angle) {
                 return _scale(angle);
             })

@@ -10,20 +10,20 @@ module.exports = function Radar() {
 
     var _discsInitParams = {
         "hours": {
-            innerDiameter: 100,
-            outerDiameter: 150,
+            innerRadius: 100,
+            outerRadius: 150,
             initialAngle: 0
         },
 
         "minutes": {
-            innerDiameter: 50,
-            outerDiameter: 100,
+            innerRadius: 50,
+            outerRadius: 100,
             initialAngle: 0
         },
 
         "seconds": {
-            innerDiameter: 0,
-            outerDiameter: 50,
+            innerRadius: 25,
+            outerRadius: 50,
             initialAngle: 0
         }
     };
@@ -31,8 +31,8 @@ module.exports = function Radar() {
     var _discs = {};
 
     this.render = function render(svgElement) {
-        createDiscs(svgElement);
         addDial(svgElement);
+        createDiscs(svgElement);
     };
 
     this.startClock = function startClock() {
@@ -53,8 +53,8 @@ module.exports = function Radar() {
             var disc = new Disc();
             var initParams = _discsInitParams[discName];
 
-            disc.setInnerDiameter(initParams.innerDiameter);
-            disc.setOuterDiameter(initParams.outerDiameter);
+            disc.setInnerRadius(initParams.innerRadius);
+            disc.setOuterRadius(initParams.outerRadius);
 
             disc.render(discsGroup);
 
@@ -67,6 +67,7 @@ module.exports = function Radar() {
 
         var dial = new Dial();
 
+        dial.setRadius(_discsInitParams.hours.outerRadius);
         dial.render(dialGroup);
     }
 
