@@ -22,7 +22,7 @@ module.exports = function Radar() {
         },
 
         "seconds": {
-            innerRadius: 25,
+            innerRadius: 5,
             outerRadius: 50,
             initialAngle: 0
         }
@@ -33,7 +33,6 @@ module.exports = function Radar() {
     this.render = function render(svgElement) {
         addDial(svgElement);
         createDiscs(svgElement);
-        createDefs(svgElement);
     };
 
     this.startClock = function startClock() {
@@ -56,6 +55,7 @@ module.exports = function Radar() {
 
             disc.setInnerRadius(initParams.innerRadius);
             disc.setOuterRadius(initParams.outerRadius);
+            disc.setName(discName);
 
             disc.render(discsGroup);
 

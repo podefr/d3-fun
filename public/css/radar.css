@@ -10,16 +10,28 @@
 .discs circle {
     fill: none;
     stroke: black;
+    stroke-width: 2x;
+}
+
+.hours path {
+    stroke: #ff2c01;
+}
+
+.minutes path {
+    stroke: #fdd600;
+}
+
+.seconds path {
+    stroke: #8cb820;
 }
 
 .discs path {
-    stroke: #c0160c;
-    stroke-width: 1px;
+    stroke-width: 8px;
     stop-color: green;
 }
 
 .dial circle {
-    fill: #500806;
+    fill: #484848;
     stroke: #3d3d3f;
     stroke-width: 16px;
 }

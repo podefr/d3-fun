@@ -12,7 +12,7 @@ module.exports = function Disc() {
         .domain([0, 359])
         .range([0, 2 * Math.PI]);
 
-    var _innerRadius, _outerRadius, _discGroup, _hand;
+    var _innerRadius, _outerRadius, _discGroup, _hand, _name;
 
     this.setInnerRadius = function setInnerRadius(innerRadius) {
         _innerRadius = innerRadius;
@@ -22,8 +22,12 @@ module.exports = function Disc() {
         _outerRadius = outerRadius;
     };
 
+    this.setName = function setName(name) {
+        _name = name;
+    };
+
     this.render = function render(group) {
-        _discGroup = group.append("svg:g");
+        _discGroup = group.append("svg:g").attr("class", _name);
 
         _discGroup.append("svg:circle")
             .attr("r", _outerRadius)

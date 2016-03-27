@@ -9,8 +9,6 @@ module.exports = function Dial() {
 
     this.render = function render(svgElement) {
         svgElement.append("svg:circle")
-            .attr("r", _radius)
-
-            .attr("fill", "url(#zoneGradient)");;
+            .attr("r", _radius);
     };
 };

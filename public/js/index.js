@@ -12972,9 +12972,7 @@ module.exports = function Dial() {
 
     this.render = function render(svgElement) {
         svgElement.append("svg:circle")
-            .attr("r", _radius)
-
-            .attr("fill", "url(#zoneGradient)");;
+            .attr("r", _radius);
     };
 };
 },{}],5:[function(require,module,exports){
@@ -12992,7 +12990,7 @@ module.exports = function Disc() {
         .domain([0, 359])
         .range([0, 2 * Math.PI]);
 
-    var _innerRadius, _outerRadius, _discGroup, _hand;
+    var _innerRadius, _outerRadius, _discGroup, _hand, _name;
 
     this.setInnerRadius = function setInnerRadius(innerRadius) {
         _innerRadius = innerRadius;
@@ -13002,8 +13000,12 @@ module.exports = function Disc() {
         _outerRadius = outerRadius;
     };
 
+    this.setName = function setName(name) {
+        _name = name;
+    };
+
     this.render = function render(group) {
-        _discGroup = group.append("svg:g");
+        _discGroup = group.append("svg:g").attr("class", _name);
 
         _discGroup.append("svg:circle")
             .attr("r", _outerRadius)
@@ -13061,7 +13063,7 @@ module.exports = function Radar() {
         },
 
         "seconds": {
-            innerRadius: 25,
+            innerRadius: 5,
             outerRadius: 50,
             initialAngle: 0
         }
@@ -13072,7 +13074,6 @@ module.exports = function Radar() {
     this.render = function render(svgElement) {
         addDial(svgElement);
         createDiscs(svgElement);
-        createDefs(svgElement);
     };
 
     this.startClock = function startClock() {
@@ -13095,6 +13096,7 @@ module.exports = function Radar() {
 
             disc.setInnerRadius(initParams.innerRadius);
             disc.setOuterRadius(initParams.outerRadius);
+            disc.setName(discName);
 
             disc.render(discsGroup);
 
