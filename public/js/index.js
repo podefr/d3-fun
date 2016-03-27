@@ -12980,7 +12980,7 @@ module.exports = function Disc() {
         .domain([0, 359])
         .range([0, 2 * Math.PI]);
 
-    var _innerDiameter, _outerDiameter, _angle;
+    var _innerDiameter, _outerDiameter, _discGroup, _hand;
 
     this.setInnerDiameter = function setInnerDiameter(innerDiameter) {
         _innerDiameter = innerDiameter;
@@ -12991,11 +12991,13 @@ module.exports = function Disc() {
     };
 
     this.render = function render(group) {
-        group.append("svg:circle")
+        _discGroup = group.append("svg:g");
+
+        _discGroup.append("svg:circle")
             .attr("r", _outerDiameter)
             .attr("class", "outer diameter disc");
 
-        var hand = d3.svg.arc()
+        _hand = d3.svg.arc()
             .innerRadius(_innerDiameter)
             .outerRadius(_outerDiameter)
             .startAngle(function (angle) {
@@ -13005,25 +13007,30 @@ module.exports = function Disc() {
                 return _scale(angle);
             });
 
-        group.selectAll("g")
-            .data([_angle])
+        _discGroup.selectAll("path")
+            .data([0])
             .enter()
             .append("svg:path")
             .attr("d", function (data) {
-                return hand(data);
+                return _hand(data);
             });
     };
 
-    this.setAngle = function setAngle(angle) {
-        _angle = angle;
+    this.updateAngle = function updateAngle(angle) {
+        _discGroup.selectAll("path")
+            .data([angle])
+            .attr("d", function (data) {
+                return _hand(data);
+            });
     };
 };
 },{"d3":3}],6:[function(require,module,exports){
 "use strict";
 
-var quartz = require('./quartz');
-var Disc = require('./Disc');
-var Dial = require('./Dial');
+var quartz = require("./quartz");
+var Disc = require("./Disc");
+var Dial = require("./Dial");
+var utils = require("./utils");
 
 module.exports = function Radar() {
     var _quartz;
@@ -13032,19 +13039,19 @@ module.exports = function Radar() {
         "hours": {
             innerDiameter: 100,
             outerDiameter: 150,
-            initialAngle: 300
+            initialAngle: 0
         },
 
         "minutes": {
             innerDiameter: 50,
             outerDiameter: 100,
-            initialAngle: 60
+            initialAngle: 0
         },
 
         "seconds": {
             innerDiameter: 0,
             outerDiameter: 50,
-            initialAngle: 200
+            initialAngle: 0
         }
     };
 
@@ -13058,15 +13065,16 @@ module.exports = function Radar() {
     this.startClock = function startClock() {
         _quartz = quartz();
 
-        _quartz.onValue(function (value) {
-            _discs.hours.setAngle(300);
-            _discs.minutes.setAngle(60);
-            _discs.seconds.setAngle(200);
-        });
+        _quartz.map(utils.timeToAngles)
+            .onValue(function (angles) {
+                _discs.hours.updateAngle(angles.hours);
+                _discs.minutes.updateAngle(angles.minutes);
+                _discs.seconds.updateAngle(angles.seconds);
+            });
     };
 
     function createDiscs(svgElement) {
-        var discGroup = svgElement.append("svg:g").attr("class", "discs");
+        var discsGroup = svgElement.append("svg:g").attr("class", "discs");
 
         Object.keys(_discsInitParams).forEach(function (discName) {
             var disc = new Disc();
@@ -13074,9 +13082,8 @@ module.exports = function Radar() {
 
             disc.setInnerDiameter(initParams.innerDiameter);
             disc.setOuterDiameter(initParams.outerDiameter);
-            disc.setAngle(initParams.initialAngle);
 
-            disc.render(discGroup);
+            disc.render(discsGroup);
 
             _discs[discName] = disc;
         });
@@ -13094,7 +13101,7 @@ module.exports = function Radar() {
 };
 
 
-},{"./Dial":4,"./Disc":5,"./quartz":8}],7:[function(require,module,exports){
+},{"./Dial":4,"./Disc":5,"./quartz":8,"./utils":9}],7:[function(require,module,exports){
 "use strict";
 
 var Radar = require("./Radar");
@@ -13111,10 +13118,43 @@ module.exports = function init(chartDom) {
 var Bacon = require('baconjs');
 
 module.exports = function quartz() {
-    var _ticksPerSecond = 4;
+    var _ticksPerSecond = 5;
 
     return Bacon.fromPoll(1000 / _ticksPerSecond, function () {
         return new Date();
     });
 };
-},{"baconjs":2}]},{},[1])
+},{"baconjs":2}],9:[function(require,module,exports){
+"use strict";
+
+module.exports = {
+    timeToAngles: function timeToAngles(date) {
+        function secondsToAngle() {
+            // 360deg = 60000ms
+            var seconds = date.getSeconds() * 1000 + date.getMilliseconds();
+
+            return 360 * seconds / 60000;
+        }
+
+        function minutesToAngle() {
+            // 360deg = 3600s
+            var minutes = date.getMinutes() * 60 + date.getSeconds();
+
+            return 360 * minutes / 3600;
+        }
+
+        function hoursToAngle() {
+            // 360deg = 3600s
+            var hours = date.getHours() * 60 + date.getMinutes();
+
+            return 360 * hours / 720;
+        }
+
+        return {
+            hours: hoursToAngle(),
+            minutes: minutesToAngle(),
+            seconds: secondsToAngle()
+        }
+    }
+};
+},{}]},{},[1])

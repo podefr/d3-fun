@@ -1,8 +1,9 @@
 "use strict";
 
-var quartz = require('./quartz');
-var Disc = require('./Disc');
-var Dial = require('./Dial');
+var quartz = require("./quartz");
+var Disc = require("./Disc");
+var Dial = require("./Dial");
+var utils = require("./utils");
 
 module.exports = function Radar() {
     var _quartz;
@@ -11,19 +12,19 @@ module.exports = function Radar() {
         "hours": {
             innerDiameter: 100,
             outerDiameter: 150,
-            initialAngle: 300
+            initialAngle: 0
         },
 
         "minutes": {
             innerDiameter: 50,
             outerDiameter: 100,
-            initialAngle: 60
+            initialAngle: 0
         },
 
         "seconds": {
             innerDiameter: 0,
             outerDiameter: 50,
-            initialAngle: 200
+            initialAngle: 0
         }
     };
 
@@ -37,15 +38,16 @@ module.exports = function Radar() {
     this.startClock = function startClock() {
         _quartz = quartz();
 
-        _quartz.onValue(function (value) {
-            _discs.hours.setAngle(300);
-            _discs.minutes.setAngle(60);
-            _discs.seconds.setAngle(200);
-        });
+        _quartz.map(utils.timeToAngles)
+            .onValue(function (angles) {
+                _discs.hours.updateAngle(angles.hours);
+                _discs.minutes.updateAngle(angles.minutes);
+                _discs.seconds.updateAngle(angles.seconds);
+            });
     };
 
     function createDiscs(svgElement) {
-        var discGroup = svgElement.append("svg:g").attr("class", "discs");
+        var discsGroup = svgElement.append("svg:g").attr("class", "discs");
 
         Object.keys(_discsInitParams).forEach(function (discName) {
             var disc = new Disc();
@@ -53,9 +55,8 @@ module.exports = function Radar() {
 
             disc.setInnerDiameter(initParams.innerDiameter);
             disc.setOuterDiameter(initParams.outerDiameter);
-            disc.setAngle(initParams.initialAngle);
 
-            disc.render(discGroup);
+            disc.render(discsGroup);
 
             _discs[discName] = disc;
         });
