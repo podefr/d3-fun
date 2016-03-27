@@ -24,8 +24,7 @@ module.exports = function Disc() {
 
         _discGroup.append("svg:circle")
             .attr("r", _outerRadius)
-            .attr("class", "outer diameter disc")
-            .append("svg:stop-color");
+            .attr("class", "outer diameter disc");
 
         _hand = d3.svg.arc()
             .innerRadius(_innerRadius)
