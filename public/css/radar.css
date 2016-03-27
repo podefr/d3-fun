@@ -1,0 +1,18 @@
+.radar svg {
+    height: 400px;
+    width: 400px;
+}
+
+.radar svg > g {
+    transform: translate(200px, 200px);
+}
+
+.discs circle {
+    fill: none;
+    stroke: red;
+}
+
+.discs path {
+    stroke: red;
+    stroke-width: 1px;
+}
